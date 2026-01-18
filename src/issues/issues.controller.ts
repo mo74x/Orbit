@@ -8,10 +8,14 @@ import {
   Query,
   UseGuards,
   Request,
+  Patch,
+  Param,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { IssuesService } from './issues.service';
 import { CreateIssueDto } from './dto/create-issue.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { UpdateIssueDto } from './dto/update-issue.dto';
 
 @UseGuards(AuthGuard('jwt'))
 @Controller('issues')
@@ -25,5 +29,12 @@ export class IssuesController {
   @Get()
   findAll(@Query('projectId') projectId: string) {
     return this.issuesService.findAll(+projectId);
+  }
+  @Patch(':id')
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateIssueDto: UpdateIssueDto,
+  ) {
+    return this.issuesService.update(id, updateIssueDto);
   }
 }
